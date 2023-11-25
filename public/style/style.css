@@ -1,0 +1,19 @@
+form[method=post]{
+    max-width: 400px;
+    margin:auto;
+}
+
+.floating-icon {
+    position: fixed;
+    bottom: 20px; /* Adjust the distance from the bottom as needed */
+    right: 20px; /* Adjust the distance from the right as needed */
+    z-index: 1000; /* Ensure the icon stays above other elements */
+}
+
+.floating-icon a {
+    display: block; /* Make the entire area clickable */
+}
+.tabel_img{
+    width: 100px;
+    height: 75px;
+}

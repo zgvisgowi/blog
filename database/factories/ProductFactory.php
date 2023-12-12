@@ -19,7 +19,7 @@ class ProductFactory extends Factory
         return [
             'name'=>'Scorpions',
             'cost'=>2.5,
-            'image'=>'https://vnadiradze.ge/info/laravel/images/vinyl.png',
+            'image'=>'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png',
             //
         ];
     }

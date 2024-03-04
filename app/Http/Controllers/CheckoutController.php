@@ -23,15 +23,19 @@ class CheckoutController extends Controller
 
     public function create(Request $request,CartService $cart)
     {
+        $sessionData=session()->all();
+        $customerId = $sessionData['costumer']->id;
         $checkout_items=$cart->get();
         $total=$cart->total();
 
         $order=Order::create([
             'total'=>$total,
+            'costumer_id'=>$customerId,
+            'address_id'=>$request['address_id']
         ]);
         foreach($checkout_items as $item){
             $order->detail()->create([
-                'table'=>$request['table'],
+                'table'=>0,
                 'product_id'=>$item['id'],
                 'cost'=>$item['cost'],
                 'qty'=>$item['qty']

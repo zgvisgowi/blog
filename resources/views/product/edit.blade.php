@@ -1,8 +1,9 @@
-@extends('layout')
+@extends('admins.layout')
 @section('content')
     <div class="text-center">
-        <form method="post" action="/storeProduct" enctype="multipart/form-data">
+        <form method="post" action="{{route('product.update',$product->id)}}" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <h1 class="mb-3 font-weight-normal">
                 edit {{$product->name}}
             </h1>
@@ -19,7 +20,8 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">$</span>
                     </div>
-                    <input type="number" name="cost" class="form-control" aria-label="Amount (to the nearest dollar)" value="{{$product->cost}}">
+                    <input type="number" name="cost" class="form-control" aria-label="Amount (to the nearest dollar)"
+                           value="{{$product->cost}}">
                     <div class="input-group-append">
                         <span class="input-group-text">.00</span>
                     </div>

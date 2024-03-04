@@ -11,27 +11,52 @@ class ProductController extends Controller
         return view('product.create');
     }
     public function store(Request $request){
-        $formfields=$request->validate([
+        $validated=$request->validate([
             'name'=>'required|min:4|max:100',
             'cost'=>'required',
             'image'=>'required'
         ]);
         if($request->hasFile('image')){
-            $formfields['image']=$request->file('image')->store('product_images','public');
+            $validated['image']=$request->file('image')->store('product_images','public');
         }
-        Product::create($formfields);
+        Product::create($validated);
 
-        return redirect('/');
+        return redirect()->route('admin.dashboard');
 
+    }
+    public function read(Product $product){
+        return view('product.read',['product'=>$product]);
     }
     public function edit(Product $product)
     {
         return view('product.edit',['product'=>$product]);
     }
-    public function manage(){
-        $products=Product::all();
+    public function update(Product $product, Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|min:4|max:100',
+            'cost' => 'required',
+            'image' => 'nullable|image', // Adjust the validation rules as needed
+        ]);
 
-        return view('product.manage',['products'=>$products]);
+        // Check if an image is uploaded
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('product_images', 'public');
+        }
+
+        $product->update([
+            'name' => $validated['name'],
+            'cost' => $validated['cost'],
+            'image' => isset($validated['image']) ? $validated['image'] : $product->image, // If no new image is provided, retain the old one
+        ]);
+
+        return redirect()->route('manage.products');
+    }
+    public function delete($id){
+        $product=Product::find($id);
+
+        $product->delete();
+        return redirect()->route('admin.dashboard')->with(['message'=>'product deleted successful']);
     }
     //
 }

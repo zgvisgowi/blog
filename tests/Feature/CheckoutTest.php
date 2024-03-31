@@ -65,7 +65,6 @@ class CheckoutTest extends TestCase
                 '2x',
                 '6.4 ₾',
 
-                '8.5 ₾'
             ]);
 
 

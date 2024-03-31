@@ -55,6 +55,14 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+    public function forgotPassword(){
+        return view('admins.forgotPassword');
+    }
+
+
+    public function addAdminForm(){
+        return view('admins.sendemail');
+    }
     public function deshboard(){
         return 0;
     }

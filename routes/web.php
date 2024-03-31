@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchProductsController;
 use App\Http\Controllers\CartController;
@@ -28,11 +27,13 @@ Route::get('/', [SearchProductsController::class,'index'])->name('index');
 
 Route::group(['middleware'=>'auth','prefix'=>'admin'],function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/register', [UserController::class, 'register']);
+    Route::get('/register', [UserController::class, 'register'])->name('admin.register')->withoutMiddleware('auth');
+    Route::get('/addNewAdmin',[UserController::class,'addAdminForm'])->name('admins.createNewAdmin');
     Route::post('/signUp', [UserController::class, 'signUp'])->name('admin.signup')->withoutMiddleware('auth');
-    Route::get('/login', [UserController::class, 'login'])->name('login')->withoutMiddleware('auth');
-    Route::post('/signIn', [UserController::class, 'signIn'])->name('admin.signIn');
+    Route::get('/login', [UserController::class, 'login'])->name('login')->withoutMiddleware('auth')->Middleware('guest');
+    Route::post('/signIn', [UserController::class, 'signIn'])->name('admin.signIn')->withoutMiddleware('auth');
     Route::post('/logout', [UserController::class, 'LogOut'])->name('logout');
+    Route::get('/forgot-password',[UserController::class,'forgotPassword'])->name('admin.forgotPassword')->withoutMiddleware('auth');
     Route::get('/products', [AdminController::class, 'products'])->name('manage.products');
     Route::get('/costumers', [AdminController::class, 'costumer'])->name('manage.costumers');
     Route::get('/orders', [AdminController::class, 'orders'])->name('manage.orders');
@@ -66,3 +67,10 @@ Route::get('/checkout',[CheckoutController::class,'index']);
 Route::post('/checkout',[CheckoutController::class,'create']);
 Route::delete('/cart/{id}',[CartController::class,'destroy']);
 Route::patch('cart/{id}',[CartController::class,'update']);
+Route::get('/checkout/success',[CheckoutController::class,'success'])->name('checkout.success');
+ROute::get('/checkout/cancel',[CheckoutController::class,'cancel'])->name('checkout.cancel');
+
+
+//stripe configuration
+
+

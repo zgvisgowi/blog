@@ -15,6 +15,6 @@ class ProductAddTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)->assertStatus('welcome to my application');
     }
 }

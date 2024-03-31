@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Services\CartService;
+use Stripe\Stripe;
 
 class CheckoutController extends Controller
 {
@@ -21,8 +22,10 @@ class CheckoutController extends Controller
 
     }
 
-    public function create(Request $request,CartService $cart)
+
+  public function create(Request $request,CartService $cart)
     {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
         $sessionData=session()->all();
         $customerId = $sessionData['costumer']->id;
         $checkout_items=$cart->get();
@@ -35,14 +38,41 @@ class CheckoutController extends Controller
         ]);
         foreach($checkout_items as $item){
             $order->detail()->create([
-                'table'=>0,
                 'product_id'=>$item['id'],
                 'cost'=>$item['cost'],
                 'qty'=>$item['qty']
             ]);
         }
+            $lineItems = [];
+        foreach ($checkout_items as $item) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'usd', // Change currency according to your needs
+                    'unit_amount' => $item['cost'] * 100, // Amount in cents
+                    'product_data' => [
+                        'name' => $item['name'], // Provide the name of the product
+                        // You can add more product data here if needed
+                    ],
+                ],
+                'quantity' => $item['qty']
+            ];
+        }
+        $checkout_session=\Stripe\Checkout\Session::create([
+           'line_items'=>$lineItems,
+            'mode'=>'payment',
+            'success_url'=>route('checkout.success'),
+            'cancel_url'=>route('checkout.cancel')
 
-        return redirect('/');
+        ]);
+         return redirect()->to($checkout_session->url);
+    }
+
+    public function success(){
+        return view('success');
+
+    }
+    public function cancel(){
+        return view('cancel');
     }
 
 }
